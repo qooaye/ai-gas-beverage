@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>50嵐 綠茶連鎖專賣店 - 點飲料系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', sans-serif;
+            background: linear-gradient(135deg, #4CAF50, #2196F3);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            padding: 20px;
+            text-align: center;
+            color: #333;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .category {
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .category-header {
+            background: #2196F3;
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+        
+        .menu-items {
+            padding: 20px;
+        }
+        
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .menu-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-name {
+            font-size: 1.1em;
+            color: #333;
+            flex: 1;
+        }
+        
+        .size-options {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .size-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.3s;
+        }
+        
+        .size-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+        
+        .order-summary {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            max-width: 300px;
+            z-index: 1000;
+        }
+        
+        .order-header {
+            background: #FF5722;
+            color: white;
+            padding: 15px;
+            border-radius: 15px 15px 0 0;
+            font-weight: bold;
+        }
+        
+        .order-items {
+            padding: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        
+        .order-item-container {
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .item-notes-section {
+            margin-top: 5px;
+        }
+        
+        .item-notes-input {
+            width: 100%;
+            padding: 5px 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 0.8em;
+            box-sizing: border-box;
+        }
+        
+        .item-notes-input:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        
+        .order-total {
+            border-top: 2px solid #eee;
+            padding: 15px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.1em;
+            cursor: pointer;
+            border-radius: 0 0 15px 15px;
+        }
+        
+        .submit-btn:hover {
+            background: #45a049;
+        }
+        
+        .customer-section {
+            margin: 15px 0;
+        }
+        
+        .customer-input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+            box-sizing: border-box;
+        }
+        
+        .customer-input:focus {
+            border-color: #4CAF50;
+            outline: none;
+            box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+        }
+        
+        .notes-section {
+            margin: 15px 0;
+        }
+        
+        .notes-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: vertical;
+            min-height: 80px;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 5px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧋 50嵐 綠茶連鎖專賣店</h1>
+            <p>歡迎使用線上點飲料系統</p>
+        </div>
+        
+        <div class="content">
+            <div id="menu-container"></div>
+        </div>
+    </div>
+    
+    <div class="order-summary" id="orderSummary">
+        <div class="order-header">
+            🛒 您的訂單
+        </div>
+        <div class="order-items" id="orderItems">
+            <p style="text-align: center; color: #999;">尚未選擇任何飲料</p>
+        </div>
+        <div class="customer-section">
+            <input type="text" class="customer-input" id="customerName" placeholder="請輸入姓名" maxlength="20">
+        </div>
+        <div class="order-total" id="orderTotal">
+            總計: $0
+        </div>
+        <button class="submit-btn" onclick="submitOrder()">送出訂單</button>
+    </div>
+
+    <script>
+        let orderData = [];
+        let total = 0;
+        
+        function loadMenu() {
+            // 檢查是否在 Google Apps Script 環境中
+            if (typeof google !== 'undefined' && google.script) {
+                google.script.run.withSuccessHandler(displayMenu).getMenuData();
+            } else {
+                // 如果不在 GAS 環境，使用本地測試資料
+                const testMenuData = {
+                    "找好茶": [
+                        {"name": "茉莉綠茶", "m": 25, "l": 30},
+                        {"name": "阿薩姆紅茶", "m": 25, "l": 30},
+                        {"name": "四季春青茶", "m": 25, "l": 30},
+                        {"name": "黃金烏龍", "m": 25, "l": 30},
+                        {"name": "1號(四季春珍波椰)", "m": 30, "l": 40},
+                        {"name": "波霸綠/紅", "m": 30, "l": 40},
+                        {"name": "微檸檬紅/青", "m": 30, "l": 40},
+                        {"name": "檸檬綠/青", "m": 35, "l": 50},
+                        {"name": "梅の綠", "m": 35, "l": 50},
+                        {"name": "8冰綠", "m": 35, "l": 50},
+                        {"name": "多多綠", "m": 35, "l": 50},
+                        {"name": "冰淇淋紅茶", "m": 35, "l": 50},
+                        {"name": "柚子紅", "m": 35, "l": 50},
+                        {"name": "旺來紅", "m": 35, "l": 50},
+                        {"name": "鮮柚綠(季節限定:4-8月，10-1月)", "m": 45, "l": 60}
+                    ],
+                    "找奶茶": [
+                        {"name": "奶茶", "m": 35, "l": 50},
+                        {"name": "奶綠", "m": 35, "l": 50},
+                        {"name": "烏龍奶", "m": 35, "l": 50},
+                        {"name": "珍珠奶茶", "m": 35, "l": 50},
+                        {"name": "珍珠奶綠", "m": 35, "l": 50},
+                        {"name": "波霸奶茶", "m": 35, "l": 50},
+                        {"name": "波霸奶綠", "m": 35, "l": 50},
+                        {"name": "燕麥奶茶", "m": 35, "l": 50},
+                        {"name": "紅茶瑪奇朵(鮮奶油)", "m": 35, "l": 50},
+                        {"name": "椰果奶茶", "m": 35, "l": 50},
+                        {"name": "椰果奶綠", "m": 35, "l": 50},
+                        {"name": "阿華田", "m": 40, "l": 55},
+                        {"name": "冰淇淋奶茶", "m": 45, "l": 60}
+                    ],
+                    "找拿鐵": [
+                        {"name": "紅茶拿鐵", "m": 45, "l": 60},
+                        {"name": "珍珠紅茶拿鐵", "m": 45, "l": 60},
+                        {"name": "波霸紅茶拿鐵", "m": 45, "l": 60},
+                        {"name": "燕麥紅茶拿鐵", "m": 45, "l": 60},
+                        {"name": "阿華田拿鐵", "m": 50, "l": 70},
+                        {"name": "冰淇淋紅茶拿鐵", "m": 50, "l": 70}
+                    ],
+                    "找新鮮": [
+                        {"name": "8冰茶", "m": 35, "l": 50},
+                        {"name": "柚子茶", "m": 35, "l": 50},
+                        {"name": "檸檬汁", "m": 45, "l": 60},
+                        {"name": "葡萄柚汁(季節限定:4-8月，10-1月)", "m": 45, "l": 60},
+                        {"name": "金桔檸檬", "m": 45, "l": 60},
+                        {"name": "檸檬梅汁", "m": 45, "l": 60},
+                        {"name": "檸檬多多", "m": 50, "l": 70},
+                        {"name": "葡萄柚多多(季節限定:4-8月，10-1月)", "m": 50, "l": 70}
+                    ]
+                };
+                displayMenu(testMenuData);
+                
+                // 顯示測試模式提示
+                showNotification('目前為測試模式，請部署到 Google Apps Script 後使用', 'info');
+            }
+        }
+        
+        function displayMenu(menuData) {
+            const container = document.getElementById('menu-container');
+            
+            Object.keys(menuData).forEach(category => {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category';
+                
+                const categoryHeader = document.createElement('div');
+                categoryHeader.className = 'category-header';
+                categoryHeader.textContent = category;
+                
+                const menuItems = document.createElement('div');
+                menuItems.className = 'menu-items';
+                
+                menuData[category].forEach(item => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'menu-item';
+                    
+                    const itemName = document.createElement('div');
+                    itemName.className = 'item-name';
+                    itemName.textContent = item.name;
+                    
+                    const sizeOptions = document.createElement('div');
+                    sizeOptions.className = 'size-options';
+                    
+                    const mBtn = document.createElement('button');
+                    mBtn.className = 'size-btn';
+                    mBtn.textContent = `中杯 $${item.m}`;
+                    mBtn.onclick = () => addToOrder(item.name, 'M', item.m);
+                    
+                    const lBtn = document.createElement('button');
+                    lBtn.className = 'size-btn';
+                    lBtn.textContent = `大杯 $${item.l}`;
+                    lBtn.onclick = () => addToOrder(item.name, 'L', item.l);
+                    
+                    sizeOptions.appendChild(mBtn);
+                    sizeOptions.appendChild(lBtn);
+                    
+                    itemDiv.appendChild(itemName);
+                    itemDiv.appendChild(sizeOptions);
+                    
+                    menuItems.appendChild(itemDiv);
+                });
+                
+                categoryDiv.appendChild(categoryHeader);
+                categoryDiv.appendChild(menuItems);
+                container.appendChild(categoryDiv);
+            });
+        }
+        
+        function addToOrder(itemName, size, price) {
+            const existingIndex = orderData.findIndex(item => 
+                item.item === itemName && item.size === size && !item.itemNotes
+            );
+            
+            if (existingIndex >= 0) {
+                orderData[existingIndex].quantity += 1;
+                orderData[existingIndex].total = orderData[existingIndex].quantity * price;
+            } else {
+                orderData.push({
+                    item: itemName,
+                    size: size,
+                    price: price,
+                    quantity: 1,
+                    total: price,
+                    itemNotes: '' // 每個飲料的獨立備註
+                });
+            }
+            
+            updateOrderDisplay();
+        }
+        
+        function updateOrderDisplay() {
+            const orderItems = document.getElementById('orderItems');
+            const orderTotal = document.getElementById('orderTotal');
+            
+            if (orderData.length === 0) {
+                orderItems.innerHTML = '<p style="text-align: center; color: #999;">尚未選擇任何飲料</p>';
+                total = 0;
+            } else {
+                orderItems.innerHTML = '';
+                total = 0;
+                
+                orderData.forEach((item, index) => {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = 'order-item-container';
+                    itemDiv.innerHTML = `
+                        <div class="order-item">
+                            <div>
+                                <div>${item.item} (${item.size})</div>
+                                <div style="font-size: 0.8em; color: #666;">$${item.price} × ${item.quantity}</div>
+                            </div>
+                            <div>
+                                <button onclick="changeQuantity(${index}, -1)" style="background: #f44336; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer;">-</button>
+                                <span style="margin: 0 8px;">$${item.total}</span>
+                                <button onclick="changeQuantity(${index}, 1)" style="background: #4CAF50; color: white; border: none; padding: 2px 6px; border-radius: 3px; cursor: pointer;">+</button>
+                            </div>
+                        </div>
+                        <div class="item-notes-section">
+                            <input type="text" class="item-notes-input" placeholder="飲料備註 (糖度、冰塊等)" 
+                                value="${item.itemNotes || ''}" onchange="updateItemNotes(${index}, this.value)" 
+                                maxlength="50">
+                        </div>
+                    `;
+                    orderItems.appendChild(itemDiv);
+                    total += item.total;
+                });
+            }
+            
+            orderTotal.textContent = `總計: $${total}`;
+        }
+        
+        function changeQuantity(index, change) {
+            orderData[index].quantity += change;
+            
+            if (orderData[index].quantity <= 0) {
+                orderData.splice(index, 1);
+            } else {
+                orderData[index].total = orderData[index].quantity * orderData[index].price;
+            }
+            
+            updateOrderDisplay();
+        }
+        
+        function updateItemNotes(index, notes) {
+            if (orderData[index]) {
+                orderData[index].itemNotes = notes;
+            }
+        }
+        
+        function submitOrder() {
+            if (orderData.length === 0) {
+                alert('請先選擇飲料！');
+                return;
+            }
+            
+            const customerName = document.getElementById('customerName').value.trim();
+            
+            // 檢查是否有輸入姓名
+            if (!customerName) {
+                alert('請輸入您的姓名！');
+                document.getElementById('customerName').focus();
+                return;
+            }
+            
+            if (typeof google !== 'undefined' && google.script) {
+                // 準備完整訂單資料
+                const fullOrder = orderData.map(item => ({
+                    item: item.item || '未知品項',
+                    size: item.size || '未知尺寸',
+                    price: parseInt(item.price) || 0,
+                    quantity: parseInt(item.quantity) || 1,
+                    total: parseInt(item.total) || 0,
+                    itemNotes: item.itemNotes || '',
+                    customerName: customerName
+                }));
+                
+                console.log('準備送出完整訂單:', fullOrder);
+                
+                // 一次送出整筆訂單
+                google.script.run
+                    .withSuccessHandler(function(response) {
+                        console.log('完整訂單送出成功:', response);
+                        showNotification(`訂單送出成功！${response.orderId || ''}`);
+                        orderData = [];
+                        total = 0;
+                        updateOrderDisplay();
+                        document.getElementById('customerName').value = '';
+                    })
+                    .withFailureHandler(function(error) {
+                        console.error('訂單送出失敗:', error);
+                        showNotification('訂單送出失敗，請重試！', 'error');
+                    })
+                    .submitFullOrder(fullOrder);
+                    
+            } else {
+                // 測試模式：模擬訂單送出
+                console.log('測試模式 - 完整訂單資料:', orderData);
+                showNotification('測試模式：完整訂單已記錄到瀏覽器控制台', 'info');
+                orderData = [];
+                total = 0;
+                updateOrderDisplay();
+                document.getElementById('customerName').value = '';
+            }
+        }
+        
+        function onAllOrdersSuccess() {
+            showNotification('所有訂單送出成功！');
+            orderData = [];
+            total = 0;
+            updateOrderDisplay();
+            document.getElementById('orderNotes').value = '';
+        }
+        
+        function onOrderSuccess(response) {
+            showNotification('訂單送出成功！');
+            orderData = [];
+            total = 0;
+            updateOrderDisplay();
+            document.getElementById('orderNotes').value = '';
+        }
+        
+        function onOrderError(error) {
+            showNotification('訂單送出失敗，請重試！', 'error');
+        }
+        
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            
+            if (type === 'error') {
+                notification.style.background = '#f44336';
+            } else if (type === 'info') {
+                notification.style.background = '#2196F3';
+            } else {
+                notification.style.background = '#4CAF50';
+            }
+            
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (document.body.contains(notification)) {
+                    document.body.removeChild(notification);
+                }
+            }, 5000);
+        }
+        
+        window.onload = loadMenu;
+    </script>
+</body>
+</html>
